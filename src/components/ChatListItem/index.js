@@ -1,22 +1,22 @@
 import {Text, View, Image, StyleSheet} from 'react-native'
 
 const ChatListItem = ({chat}) => {
-    return (<View style={styles.container}>
-        <Image style={styles.image}
-               source={{uri: chat.user.image}}>
-        </Image>
-        <View style={styles.content}>
-            <View style={styles.row}>
-                <Text numberOfLines={1} style={styles.name}>
-                    {chat.user.name}
-                </Text>
-                <Text style={styles.subTitle}>
-                    {chat.lastMessage.createdAt}
-                </Text>
+    return (
+        <View style={styles.container}>
+            <Image style={styles.image} source={{uri: chat.user.image}}/>
+
+            <View style={styles.content}>
+                <View style={styles.row}>
+                    <Text numberOfLines={1} style={styles.name}>
+                        {chat.user.name}
+                    </Text>
+                    <Text style={styles.subTitle}>
+                        {chat.lastMessage.createdAt}
+                    </Text>
+                </View>
+                <Text numberOfLines={2} style={styles.subTitle}>{chat.lastMessage.text}</Text>
             </View>
-            <Text numberOfLines={2} style={styles.subTitle}>{chat.lastMessage.text}</Text>
-        </View>
-    </View>);
+        </View>);
 }
 
 const styles = StyleSheet.create({
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
-        marginRight:10,
+        marginRight: 10,
     },
     content: {
         flex: 1,
