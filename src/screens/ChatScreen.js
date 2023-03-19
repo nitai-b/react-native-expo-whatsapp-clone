@@ -3,6 +3,7 @@ import {StyleSheet} from "react-native";
 import bg from '../../assets/images/BG.png';
 import messages from '../../assets/data/messages.json';
 import Message from "../components/Message";
+import InputBox from "../components/InputBox";
 
 const ChatScreen = () => {
     return (
@@ -13,6 +14,7 @@ const ChatScreen = () => {
                 style={styles.list}
                 inverted
             />
+            <InputBox/>
         </ImageBackground>
     );
 }
