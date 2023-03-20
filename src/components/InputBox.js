@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {View, Text, TextInput} from "react-native";
 import {StyleSheet} from "react-native";
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -7,14 +8,22 @@ import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 dayjs.extend(relativeTime)
 
 const InputBox = ({message}) => {
+
+    const [newMessage, setNewMessage] = useState('');
+
+    const onSend = () => {
+        console.warn('Sending a new message: ', newMessage);
+        setNewMessage('');
+    }
+
     return (
         <View style={styles.container}>
             {/*    Icon*/}
             <AntDesign name='plus' size={20} color='royalblue'/>
             {/*    Text Input*/}
-            <TextInput placeholder='Type your message' style={styles.input}></TextInput>
+            <TextInput value={newMessage} onChangeText={setNewMessage} placeholder='Type your message' style={styles.input}></TextInput>
             {/*    Icon*/}
-            <MaterialIcons name='send' size={16} color='white' style={styles.send}/>
+            <MaterialIcons onPress={onSend} name='send' size={16} color='white' style={styles.send}/>
         </View>
     );
 }
