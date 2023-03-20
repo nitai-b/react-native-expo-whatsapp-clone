@@ -2,7 +2,6 @@ import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import ChatScreen from '../screens/ChatScreen';
-import ChatsScreen from '../screens/ChatsScreen';
 import MainTabNavigator from './MainTabNavigatior';
 
 const Stack = createNativeStackNavigator();
