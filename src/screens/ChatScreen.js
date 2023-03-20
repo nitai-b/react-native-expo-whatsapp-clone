@@ -18,7 +18,9 @@ const ChatScreen = () => {
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-			style={styles.bg}>
+			keyboardVerticalOffset={Platform.OS === 'ios' ? 65 : 90}
+			style={styles.bg}
+		>
 			<ImageBackground source={bg} style={styles.bg}>
 				<FlatList
 					data={messages}
