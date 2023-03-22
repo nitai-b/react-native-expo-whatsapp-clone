@@ -1,7 +1,8 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import NotImplementedScreen from '../screens/NotImplimentedScreen';
 import ChatsScreen from '../screens/ChatsScreen';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import Settings from '../screens/Settings';
+import {Ionicons, Entypo} from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -10,16 +11,16 @@ const MainTabNavigator = () => {
 		<Tab.Navigator
 			initialRouteName="Chats"
 			screenOptions={{
-				tabBarStyle: { backgroundColor: 'whitesmoke' },
-				headerStyle: { backgroundColor: 'whitesmoke' },
+				tabBarStyle: {backgroundColor: 'whitesmoke'},
+				headerStyle: {backgroundColor: 'whitesmoke'},
 			}}
 		>
 			<Tab.Screen
 				name="Status"
 				component={NotImplementedScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="logo-whatsapp" size={size} color={color} />
+					tabBarIcon: ({color, size}) => (
+						<Ionicons name="logo-whatsapp" size={size} color={color}/>
 					),
 				}}
 			/>
@@ -27,8 +28,8 @@ const MainTabNavigator = () => {
 				name="Calls"
 				component={NotImplementedScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="call-outline" size={size} color={color} />
+					tabBarIcon: ({color, size}) => (
+						<Ionicons name="call-outline" size={size} color={color}/>
 					),
 				}}
 			/>
@@ -36,17 +37,17 @@ const MainTabNavigator = () => {
 				name="Camera"
 				component={NotImplementedScreen}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="camera-outline" size={size} color={color} />
+					tabBarIcon: ({color, size}) => (
+						<Ionicons name="camera-outline" size={size} color={color}/>
 					),
 				}}
 			/>
 			<Tab.Screen
 				name="Chats"
 				component={ChatsScreen}
-				options={({ navigation }) => ({
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="ios-chatbubbles-sharp" size={size} color={color} />
+				options={({navigation}) => ({
+					tabBarIcon: ({color, size}) => (
+						<Ionicons name="ios-chatbubbles-sharp" size={size} color={color}/>
 					),
 					headerRight: () => (
 						<Entypo
@@ -54,17 +55,17 @@ const MainTabNavigator = () => {
 							name="new-message"
 							size={18}
 							color={'royalblue'}
-							style={{ marginRight: 15 }}
+							style={{marginRight: 15}}
 						/>
 					),
 				})}
 			/>
 			<Tab.Screen
 				name="Settings"
-				component={NotImplementedScreen}
+				component={Settings}
 				options={{
-					tabBarIcon: ({ color, size }) => (
-						<Ionicons name="settings-outline" size={size} color={color} />
+					tabBarIcon: ({color, size}) => (
+						<Ionicons name="settings-outline" size={size} color={color}/>
 					),
 				}}
 			/>
