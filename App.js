@@ -25,12 +25,17 @@ function App() {
 				return;
 			}
 			
+			if (sub == null && authUser.attributes.phone_number == null) {
+				console.log('Cannot create user in Users table');
+				return;
+			}
+			
 			const variables = {
 				id: sub,
 				name: authUser.attributes.phone_number,
 				status: 'Hey there! I am using WhatsApp',
 			};
-			console.log({ variables: variables });
+			console.log(variables);
 			
 			// if there is no users in db, create one
 			const newUserResponse = await API.graphql(
