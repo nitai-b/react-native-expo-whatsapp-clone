@@ -30,16 +30,15 @@ function App() {
 				return;
 			}
 			
-			const variables = {
+			const newUser = {
 				id: sub,
 				name: authUser.attributes.phone_number,
 				status: 'Hey there! I am using WhatsApp',
 			};
-			console.log(variables);
 			
 			// if there is no users in db, create one
 			const newUserResponse = await API.graphql(
-				graphqlOperation(createUser, { input: variables }),
+				graphqlOperation(createUser, { input: newUser }),
 			);
 		} catch (e) {
 			console.log(e);
