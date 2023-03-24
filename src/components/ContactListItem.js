@@ -5,12 +5,12 @@ import dayjs from 'dayjs';
 
 dayjs.extend(relativeTime);
 
-const ContactListItem = ({user}) => {
+const ContactListItem = ({ user }) => {
 	const navigation = useNavigation();
 	return (
 		<Pressable onPress={() => {
 		}} style={styles.container}>
-			<Image style={styles.image} source={{uri: user.image}}/>
+			<Image style={styles.image} source={{ uri: user.image }}/>
 			
 			<View style={styles.content}>
 				<Text numberOfLines={1} style={styles.name}>
@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
 	name: {
 		fontWeight: 'bold',
 	},
-	content: {},
+	content: {
+		flex: 1,
+	},
 	subTitle: {
 		color: 'gray',
 	},
