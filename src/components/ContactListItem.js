@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import {createChatRoom, createUserChatRoom} from '../graphql/mutations';
-import {getChatRoom, getMyChatRoomWithUser} from '../services/chatRoomService';
+import {getMyChatRoomWithUser} from '../services/chatRoomService';
 
 dayjs.extend(relativeTime);
 
@@ -13,7 +13,7 @@ const ContactListItem = ({ user }) => {
 	const chatRoomInit = async () => {
 		console.warn('pressed');
 		// check if we already have a chatroom with this user
-		const existingChatRooms = await getMyChatRoomWithUser();
+		const existingChatRooms = await getMyChatRoomWithUser(user.id);
 		
 		if (existingChatRooms) {
 			// navigate to the newly created chatroom
@@ -23,36 +23,36 @@ const ContactListItem = ({ user }) => {
 			return;
 		}
 		
-		// // Create a new ChatRoom
-		// const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
-		// console.log(newChatRoomData);
-		//
-		// if (!newChatRoomData.data.createChatRoom) {
-		// 	console.log('Error createign the chatroom');
-		// }
-		// const newChatRoom = newChatRoomData.data?.createChatRoom;
-		//
-		// // Add the clicked user to the ChatRoom
-		// const addUser = await API.graphql(graphqlOperation(createUserChatRoom, {
-		// 	input: {
-		// 		chatRoomId: newChatRoom.id,
-		// 		userId: user.id,
-		// 	},
-		// }));
-		//
-		// // Add the authUser to the ChatRoom
-		// const authUser = await Auth.currentAuthenticatedUser();
-		// const addAuthUser = await API.graphql(graphqlOperation(createUserChatRoom, {
-		// 	input: {
-		// 		chatRoomId: newChatRoom.id,
-		// 		userId: authUser.attributes.sub,
-		// 	},
-		// }));
-		//
-		// // navigate to the newly created chatroom
-		// navigation.navigate('Chat', {
-		// 	id: newChatRoom.id,
-		// });
+		// Create a new ChatRoom
+		const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
+		console.log(newChatRoomData);
+		
+		if (!newChatRoomData.data.createChatRoom) {
+			console.log('Error createign the chatroom');
+		}
+		const newChatRoom = newChatRoomData.data?.createChatRoom;
+		
+		// Add the clicked user to the ChatRoom
+		const addUser = await API.graphql(graphqlOperation(createUserChatRoom, {
+			input: {
+				chatRoomId: newChatRoom.id,
+				userId: user.id,
+			},
+		}));
+		
+		// Add the authUser to the ChatRoom
+		const authUser = await Auth.currentAuthenticatedUser();
+		const addAuthUser = await API.graphql(graphqlOperation(createUserChatRoom, {
+			input: {
+				chatRoomId: newChatRoom.id,
+				userId: authUser.attributes.sub,
+			},
+		}));
+		
+		// navigate to the newly created chatroom
+		navigation.navigate('Chat', {
+			id: newChatRoom.id,
+		});
 	};
 	
 	return (
