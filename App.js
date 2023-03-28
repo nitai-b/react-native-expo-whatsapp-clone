@@ -15,7 +15,6 @@ function App() {
 		// get Auth user
 		const authUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
 		const sub = authUser.attributes.sub;
-		console.log(sub);
 		// query the database using Auth user id (sub)
 		const userData = await API.graphql(graphqlOperation(getUser, { id: sub }));
 		
