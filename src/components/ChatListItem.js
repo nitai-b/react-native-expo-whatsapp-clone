@@ -1,4 +1,5 @@
 import {Auth} from 'aws-amplify';
+import {useEffect, useState} from 'react';
 import {Text, View, Image, StyleSheet, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -14,7 +15,6 @@ const ChatListItem = ({ chat }) => {
 		const authUser = await Auth.currentAuthenticatedUser();
 		const userItem = chat.users.items.find(item => item.user.id !== authUser.attributes.id);
 		setUser(userItem?.user);
-		
 	};
 	
 	useEffect(() => {
