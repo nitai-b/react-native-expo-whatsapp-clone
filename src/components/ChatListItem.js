@@ -1,3 +1,4 @@
+import {Auth} from 'aws-amplify';
 import {Text, View, Image, StyleSheet, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -7,9 +8,18 @@ dayjs.extend(relativeTime);
 
 const ChatListItem = ({ chat }) => {
 	const navigation = useNavigation();
+	const [user, setUser] = useState(null);
 	
-	// loop through chat users items and find the user that isn't the authenticated user
-	const user = chat.users.items[0].user;
+	const fetchUser = async () => {
+		const authUser = await Auth.currentAuthenticatedUser();
+		const userItem = chat.users.items.find(item => item.user.id !== authUser.attributes.id);
+		setUser(userItem?.user);
+		
+	};
+	
+	useEffect(() => {
+		fetchUser();
+	}, []);
 	
 	return (
 		<Pressable onPress={() => navigation.navigate('Chat', { id: chat.id, name: user?.name })} style={styles.container}>
