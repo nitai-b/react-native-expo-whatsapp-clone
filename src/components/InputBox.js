@@ -6,11 +6,11 @@ import dayjs from 'dayjs';
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {API, graphqlOperation, Auth} from 'aws-amplify';
-import {createMessage} from '../graphql/mutations';
+import {createMessage, updateChatRoom} from '../graphql/mutations';
 
 dayjs.extend(relativeTime);
 
-const InputBox = ({ chatroomID }) => {
+const InputBox = ({ chatroom }) => {
 	
 	const [text, setText] = useState('');
 	
@@ -20,12 +20,22 @@ const InputBox = ({ chatroomID }) => {
 		const authUser = await Auth.currentAuthenticatedUser();
 		
 		const newMessage = {
-			chatroomID: chatroomID,
+			chatroomID: chatroom.id,
 			text: text,
 			userID: authUser.attributes.sub,
 		};
-		await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
+		
+		const newMessageData = await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
 		setText('');
+		
+		// set the new message as the last message of that chatroom
+		await API.graphql(graphqlOperation(updateChatRoom, {
+			input: {
+				_version: chatroom._version,
+				chatRoomLastMessageId: newMessageData.data.createMessage.id,
+				id: chatroom.id,
+			},
+		}));
 	};
 	
 	return (

@@ -43,7 +43,7 @@ const ChatScreen = () => {
 					style={styles.list}
 					inverted
 				/>
-				<InputBox chatroomID={chatroomID}/>
+				<InputBox chatroom={chatRoom}/>
 			</ImageBackground>
 		</KeyboardAvoidingView>
 	);
