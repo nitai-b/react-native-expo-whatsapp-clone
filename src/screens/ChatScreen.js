@@ -10,6 +10,7 @@ import {useRoute, useNavigation} from '@react-navigation/native';
 const ChatScreen = () => {
 	const route = useRoute();
 	const navigation = useNavigation();
+	const chatroomID = route.params.id;
 	
 	useEffect(() => {
 		navigation.setOptions({title: route.params.name});
@@ -28,7 +29,7 @@ const ChatScreen = () => {
 					style={styles.list}
 					inverted
 				/>
-				<InputBox/>
+				<InputBox chatroomID={chatroomID}/>
 			</ImageBackground>
 		</KeyboardAvoidingView>
 	);

@@ -5,24 +5,35 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {API, graphqlOperation, Auth} from 'aws-amplify';
+import {createMessage} from '../graphql/mutations';
 
 dayjs.extend(relativeTime);
 
-const InputBox = ({message}) => {
+const InputBox = ({ chatroomID }) => {
 	
-	const [newMessage, setNewMessage] = useState('');
+	const [text, setText] = useState('');
 	
-	const onSend = () => {
-		console.warn('Sending a new message: ', newMessage);
-		setNewMessage('');
+	const onSend = async () => {
+		console.warn('Sending a new message: ', text);
+		
+		const authUser = await Auth.currentAuthenticatedUser();
+		
+		const newMessage = {
+			chatroomID: chatroomID,
+			text: text,
+			userID: authUser.attributes.sub,
+		};
+		await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
+		setText('');
 	};
 	
 	return (
-		<SafeAreaView edges={['bottom']}  style={styles.container}>
+		<SafeAreaView edges={['bottom']} style={styles.container}>
 			{/*    Icon*/}
 			<AntDesign name="plus" size={20} color="royalblue"/>
 			{/*    Text Input*/}
-			<TextInput value={newMessage} onChangeText={setNewMessage} placeholder="Type your message"
+			<TextInput value={text} onChangeText={setText} placeholder="Type your message"
 								 style={styles.input}></TextInput>
 			{/*    Icon*/}
 			<MaterialIcons onPress={onSend} name="send" size={16} color="white" style={styles.send}/>
