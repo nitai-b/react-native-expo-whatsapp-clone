@@ -1,23 +1,25 @@
 type ChatRoom @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
-  users: [User] @manyToMany(relationName: "UserChatRoom")
-  LastMessage: Message @hasOne
+    id: ID!
+    name: String
+    image: String
+    Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
+    users: [User] @manyToMany(relationName: "UserChatRoom")
+    LastMessage: Message @hasOne
 }
 
 type Message @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  createdAt: AWSDateTime!
-  text: String!
-  chatroomID: ID! @index(name: "byChatRoom", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatRoom")
-  userID: ID! @index(name: "byUser")
+    id: ID!
+    createdAt: AWSDateTime!
+    text: String!
+    chatroomID: ID! @index(name: "byChatRoom", sortKeyFields: ["createdAt"], queryField: "listMessagesByChatRoom")
+    userID: ID! @index(name: "byUser")
 }
 
 type User @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  status: String
-  image: String
-  Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
-  ChatRooms: [ChatRoom] @manyToMany(relationName: "UserChatRoom")
+    id: ID!
+    name: String!
+    status: String
+    image: String
+    Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
+    ChatRooms: [ChatRoom] @manyToMany(relationName: "UserChatRoom")
 } 
