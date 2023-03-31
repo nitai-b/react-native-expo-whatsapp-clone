@@ -7,7 +7,7 @@ import messages from '../../assets/data/messages.json';
 import Message from '../components/Message';
 import InputBox from '../components/InputBox';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import {getChatRoom} from '../graphql/queries';
+import {getChatRoom, listMessagesByChatRoom} from '../graphql/queries';
 
 const ChatScreen = () => {
 	const route = useRoute();
@@ -15,13 +15,24 @@ const ChatScreen = () => {
 	const chatroomID = route.params.id;
 	
 	const [chatRoom, setChatRoom] = useState(null);
+	const [messages, setMessages] = useState([]);
 	
+	// responsible for fetching the chatroom
 	useEffect(() => {
-		API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then(
-			(result) => setChatRoom(result.data?.getChatRoom),
-		);
+		API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then((result) => setChatRoom(result.data?.getChatRoom));
 	}, []);
 	
+	// fetching messages
+	useEffect(() => {
+		API.graphql(graphqlOperation(listMessagesByChatRoom, {
+			chatroomID,
+			sortDirection: 'DESC',
+		})).then((result) => {
+			setMessages(result.data?.listMessagesByChatRoom?.items);
+		});
+	}, []);
+	
+	//
 	useEffect(() => {
 		navigation.setOptions({ title: route.params.name });
 	}, [route.params.name]);
@@ -38,7 +49,7 @@ const ChatScreen = () => {
 		>
 			<ImageBackground source={bg} style={styles.bg}>
 				<FlatList
-					data={chatRoom.Messages.items}
+					data={messages}
 					renderItem={({ item }) => <Message message={item}/>}
 					style={styles.list}
 					inverted
