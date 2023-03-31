@@ -18,15 +18,12 @@ function App() {
 		// query the database using Auth user id (sub)
 		const userData = await API.graphql(graphqlOperation(getUser, { id: sub }));
 		
-		console.log(authUser.attributes.phone_number == undefined);
 		if (userData.data.getUser) {
-			console.log('User already exists in DB');
 			return;
 		}
 		
 		const validPhoneNumber = authUser.attributes.phone_number == undefined || authUser.attributes.phone_number == null;
 		if (sub == null && validPhoneNumber) {
-			console.log('Cannot create user in Users table');
 			return;
 		}
 		

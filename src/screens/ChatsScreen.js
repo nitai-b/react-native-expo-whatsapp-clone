@@ -13,10 +13,13 @@ const ChatsScreen = () => {
 		const response = await API.graphql(
 			graphqlOperation(listChats, { id: authUser.attributes.sub }),
 		);
+		// console.log(response.data.getUser.ChatRooms.items.map((value, index, array) => {
+		// 	return value.chatRoom.updatedAt
+		// }));
 		
 		const rooms = response?.data?.getUser?.ChatRooms?.items || [];
 		const sortedRooms = rooms.sort((room1, room2) => {
-			return new Date(room2.chatRoom.updatedAt) - new Date(room1.chatRoom.updateAt);
+			return new Date(room2.chatRoom.updatedAt) - new Date(room1.chatRoom.updatedAt);
 		});
 		
 		setChatRooms(sortedRooms);

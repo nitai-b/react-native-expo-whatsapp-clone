@@ -11,7 +11,6 @@ dayjs.extend(relativeTime);
 const ContactListItem = ({ user }) => {
 	const navigation = useNavigation();
 	const chatRoomInit = async () => {
-		console.warn('pressed');
 		// check if we already have a chatroom with this user
 		const existingChatRooms = await getMyChatRoomWithUser(user.id);
 		
@@ -25,11 +24,7 @@ const ContactListItem = ({ user }) => {
 		
 		// Create a new ChatRoom
 		const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
-		console.log(newChatRoomData);
 		
-		if (!newChatRoomData.data.createChatRoom) {
-			console.log('Error createign the chatroom');
-		}
 		const newChatRoom = newChatRoomData.data?.createChatRoom;
 		
 		// Add the clicked user to the ChatRoom
