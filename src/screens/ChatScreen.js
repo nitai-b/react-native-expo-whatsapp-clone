@@ -20,7 +20,7 @@ const ChatScreen = () => {
 	// responsible for fetching the chatroom
 	useEffect(() => {
 		API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then((result) => setChatRoom(result.data?.getChatRoom));
-	}, []);
+	}, [chatroomID]);
 	
 	// fetching messages
 	useEffect(() => {
@@ -30,7 +30,7 @@ const ChatScreen = () => {
 		})).then((result) => {
 			setMessages(result.data?.listMessagesByChatRoom?.items);
 		});
-	}, []);
+	}, [chatroomID]);
 	
 	//
 	useEffect(() => {
