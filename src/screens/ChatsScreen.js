@@ -9,14 +9,17 @@ const ChatsScreen = () => {
 	
 	const getChatRooms = async () => {
 		const authUser = await Auth.currentAuthenticatedUser();
-		console.log(authUser.attributes.sub);
-		
-		console.log('is null?', authUser.attributes.sub == null || false || authUser.attributes.sub == '');
 		
 		const response = await API.graphql(
 			graphqlOperation(listChats, { id: authUser.attributes.sub }),
 		);
-		setChatRooms(response.data.getUser.ChatRooms.items);
+		
+		const rooms = response?.data?.getUser?.ChatRooms?.items || [];
+		const sortedRooms = rooms.sort((room1, room2) => {
+			return new Date(room2.chatRoom.updatedAt) - new Date(room1.chatRoom.updateAt);
+		});
+		
+		setChatRooms(sortedRooms);
 	};
 	
 	useEffect(() => {
