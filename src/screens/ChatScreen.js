@@ -8,6 +8,7 @@ import Message from '../components/Message';
 import InputBox from '../components/InputBox';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {getChatRoom, listMessagesByChatRoom} from '../graphql/queries';
+import {onCreateMessage} from '../graphql/subscriptions';
 
 const ChatScreen = () => {
 	const route = useRoute();
@@ -29,6 +30,17 @@ const ChatScreen = () => {
 			sortDirection: 'DESC',
 		})).then((result) => {
 			setMessages(result.data?.listMessagesByChatRoom?.items);
+		});
+		
+		// subscribe to new messages
+		API.graphql(graphqlOperation(onCreateMessage)).subscribe({
+			next: ({ value }) => {
+				console.log('new message');
+				console.log(value);
+			},
+			error: (err) => {
+				console.warn(err);
+			},
 		});
 	}, [chatroomID]);
 	
