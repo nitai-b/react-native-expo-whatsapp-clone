@@ -37,6 +37,7 @@ const ChatScreen = () => {
 			next: ({ value }) => {
 				console.log('new message');
 				console.log(value);
+				setMessages((m) => [value.data.onCreateMessage, ...m]);
 			},
 			error: (err) => {
 				console.warn(err);
