@@ -33,7 +33,7 @@ const ChatScreen = () => {
 		});
 		
 		// subscribe to new messages
-		const subscription = API.graphql(graphqlOperation(onCreateMessage)).subscribe({
+		const subscription = API.graphql(graphqlOperation(onCreateMessage, { filter: { chatroomID: { 'eq': chatroomID } } })).subscribe({
 			next: ({ value }) => {
 				console.log('new message');
 				console.log(value);
