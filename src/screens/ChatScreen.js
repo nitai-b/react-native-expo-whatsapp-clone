@@ -33,7 +33,7 @@ const ChatScreen = () => {
 		});
 		
 		// subscribe to new messages
-		API.graphql(graphqlOperation(onCreateMessage)).subscribe({
+		const subscription = API.graphql(graphqlOperation(onCreateMessage)).subscribe({
 			next: ({ value }) => {
 				console.log('new message');
 				console.log(value);
@@ -43,6 +43,8 @@ const ChatScreen = () => {
 				console.warn(err);
 			},
 		});
+		
+		return () => subscription.unsubscribe();
 	}, [chatroomID]);
 	
 	//
