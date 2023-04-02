@@ -1,12 +1,10 @@
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {useEffect, useState} from 'react';
-import {ImageBackground, FlatList, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {ActivityIndicator, FlatList, ImageBackground, KeyboardAvoidingView, StyleSheet} from 'react-native';
 import bg from '../../assets/images/BG.png';
-import messages from '../../assets/data/messages.json';
-import Message from '../components/Message';
 import InputBox from '../components/InputBox';
-import {useRoute, useNavigation} from '@react-navigation/native';
+import Message from '../components/Message';
 import {getChatRoom, listMessagesByChatRoom} from '../graphql/queries';
 import {onCreateMessage, onUpdateChatRoom} from '../graphql/subscriptions';
 
