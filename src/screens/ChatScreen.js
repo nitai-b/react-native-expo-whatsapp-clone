@@ -8,9 +8,10 @@ import Message from '../components/Message';
 import InputBox from '../components/InputBox';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {getChatRoom, listMessagesByChatRoom} from '../graphql/queries';
-import {onCreateMessage} from '../graphql/subscriptions';
+import {onCreateMessage, onUpdateChatRoom} from '../graphql/subscriptions';
 
 const ChatScreen = () => {
+	// Necessary objects and values
 	const route = useRoute();
 	const navigation = useNavigation();
 	const chatroomID = route.params.id;
@@ -21,6 +22,15 @@ const ChatScreen = () => {
 	// responsible for fetching the chatroom
 	useEffect(() => {
 		API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then((result) => setChatRoom(result.data?.getChatRoom));
+		const subscription = API.graphql(graphqlOperation(onUpdateChatRoom, { input: { filter: { id: { eq: chatroomID } } } }),
+		).subscribe({
+			next: ({ value }) => {
+				setChatRoom(cr => ({ ...(cr || {}), ...value.data.onUpdateChatroom }));
+			},
+			error: (error) => console.warn(error),
+		});
+		
+		return () => subscription.unsubscribe();
 	}, [chatroomID]);
 	
 	// fetching messages
@@ -35,8 +45,6 @@ const ChatScreen = () => {
 		// subscribe to new messages
 		const subscription = API.graphql(graphqlOperation(onCreateMessage, { filter: { chatroomID: { 'eq': chatroomID } } })).subscribe({
 			next: ({ value }) => {
-				console.log('new message');
-				console.log(value);
 				setMessages((m) => [value.data.onCreateMessage, ...m]);
 			},
 			error: (err) => {

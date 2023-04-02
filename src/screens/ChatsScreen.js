@@ -6,8 +6,10 @@ import ChatListItem from '../components/ChatListItem';
 
 const ChatsScreen = () => {
 	const [chatRooms, setChatRooms] = useState([]);
+	const [loading, setLoading] = useState(false);
 	
 	const getChatRooms = async () => {
+		setLoading(true);
 		const authUser = await Auth.currentAuthenticatedUser();
 		
 		const response = await API.graphql(
@@ -23,6 +25,7 @@ const ChatsScreen = () => {
 		});
 		
 		setChatRooms(sortedRooms);
+		setLoading(false);
 	};
 	
 	useEffect(() => {
@@ -34,6 +37,8 @@ const ChatsScreen = () => {
 			data={chatRooms}
 			renderItem={({ item }) => <ChatListItem chat={item.chatRoom}/>}
 			style={{ backgroundColor: 'whitesmoke' }}
+			onRefresh={getChatRooms}
+			refreshing={loading}
 		/>
 	);
 };
