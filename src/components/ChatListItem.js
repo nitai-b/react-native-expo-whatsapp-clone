@@ -1,28 +1,44 @@
-import {Auth} from 'aws-amplify';
+import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {useEffect, useState} from 'react';
 import {Text, View, Image, StyleSheet, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
+import {onUpdateChatRoom} from '../graphql/subscriptions';
 
 dayjs.extend(relativeTime);
 
 const ChatListItem = ({ chat }) => {
 	const navigation = useNavigation();
 	const [user, setUser] = useState(null);
+	const [chatRoom, setChatRoom] = useState(chat);
 	
 	const fetchUser = async () => {
 		const authUser = await Auth.currentAuthenticatedUser();
-		const userItem = chat.users.items.find(item => item.user.id !== authUser.attributes.id);
+		const userItem = chatRoom.users.items.find(item => item.user.id !== authUser.attributes.id);
 		setUser(userItem?.user);
 	};
+	
+	useEffect(() => {
+		const subscription = API.graphql(graphqlOperation(onUpdateChatRoom, {
+				filter: { id: { eq: chat.id } },
+			}),
+		).subscribe({
+			next: ({ value }) => {
+				setChatRoom((cr) => ({ ...(cr || {}), ...value.data.onUpdateChatRoom }));
+			},
+			error: (error) => console.warn(error),
+		});
+		return () => subscription.unsubscribe();
+	}, [chat.id]);
 	
 	useEffect(() => {
 		fetchUser();
 	}, []);
 	
 	return (
-		<Pressable onPress={() => navigation.navigate('Chat', { id: chat.id, name: user?.name })} style={styles.container}>
+		<Pressable onPress={() => navigation.navigate('Chat', { id: chatRoom.id, name: user?.name })}
+							 style={styles.container}>
 			<Image style={styles.image} source={{ uri: user?.image }}/>
 			<View style={styles.content}>
 				<View style={styles.row}>
@@ -30,16 +46,16 @@ const ChatListItem = ({ chat }) => {
 						{user?.name}
 					</Text>
 					{
-						chat.LastMessage
+						chatRoom.LastMessage
 							?
 							<Text style={styles.subTitle}>
-								{dayjs(chat.LastMessage?.createdAt).fromNow(true)}
+								{dayjs(chatRoom.LastMessage?.createdAt).fromNow(true)}
 							</Text>
 							:
 							''
 					}
 				</View>
-				<Text numberOfLines={2} style={styles.subTitle}>{chat.LastMessage?.text}</Text>
+				<Text numberOfLines={2} style={styles.subTitle}>{chatRoom.LastMessage?.text}</Text>
 			</View>
 		</Pressable>);
 };
