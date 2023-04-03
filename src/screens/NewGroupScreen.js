@@ -5,10 +5,10 @@ import {API, graphqlOperation} from 'aws-amplify';
 import {listUsers} from '../graphql/queries';
 import {useNavigation} from '@react-navigation/native';
 
-const ContactsScreen = () => {
+const NewGroupScreen = () => {
 	const [users, setUsers] = useState([]);
 	const [name, setName] = useState('');
-	const [selecteduserIds, setSelectedUserIds] = useState([]);
+	const [selectedUserIds, setSelectedUserIds] = useState([]);
 	
 	const navigation = useNavigation();
 	
@@ -20,11 +20,13 @@ const ContactsScreen = () => {
 	
 	useEffect(() => {
 		navigation.setOptions({
-			headerRight: () => (
-				<Button title="Create" disabled={!name} onPress={onCreateGroupPress}/>
-			),
+			headerRight: () => {
+				return (
+					<Button title="Create" disabled={!name || selectedUserIds.length < 1} onPress={onCreateGroupPress}/>
+				);
+			},
 		});
-	}, [name]);
+	}, [name, selectedUserIds]);
 	
 	const onCreateGroupPress = () => {
 	};
@@ -56,7 +58,7 @@ const ContactsScreen = () => {
 						user={item}
 						onPress={() => onContactPress(item.id)}
 						selectable={true}
-						isSelected={selecteduserIds.includes(item.id)}
+						isSelected={selectedUserIds.includes(item.id)}
 					/>
 				)}
 			/>
@@ -74,4 +76,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ContactsScreen;
+export default NewGroupScreen;

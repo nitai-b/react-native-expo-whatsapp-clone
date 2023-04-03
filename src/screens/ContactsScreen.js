@@ -22,8 +22,6 @@ const ContactsScreen = () => {
 		// check if we already have a chatroom with this user
 		const existingChatRooms = await getMyChatRoomWithUser(user.id);
 		if (existingChatRooms) {
-			console.log('existing chatrooms');
-			console.log(existingChatRooms);
 			// navigate to the newly created chatroom
 			navigation.navigate('Chat', {
 				id: existingChatRooms.chatRoom.id,
