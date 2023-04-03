@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {FlatList} from 'react-native';
 import ContactListItem from '../components/ContactListItem';
 import {API, graphqlOperation} from 'aws-amplify';
+import ListHeaderComponent from '../components/ListHeaderComponent';
 import {listUsers} from '../graphql/queries';
 
 const ContactsScreen = () => {
@@ -18,6 +19,7 @@ const ContactsScreen = () => {
 			data={users}
 			renderItem={({ item }) => <ContactListItem user={item}/>}
 			style={{ backgroundColor: 'whitesmoke' }}
+			ListHeaderComponent={ListHeaderComponent}
 		/>
 	);
 };
