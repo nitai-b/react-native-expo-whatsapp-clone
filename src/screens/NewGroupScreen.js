@@ -28,6 +28,10 @@ const ContactsScreen = () => {
 	const onCreateGroupPress = () => {
 	};
 	
+	const onPressContact = () => {
+		console.success('going to create a new group with this person');
+	};
+	
 	return (
 		<View style={styles.container}>
 			<TextInput
@@ -39,7 +43,7 @@ const ContactsScreen = () => {
 			<FlatList
 				data={users}
 				renderItem={({ item }) => (
-					<ContactListItem user={item}/>
+					<ContactListItem user={item} onPress={() => onPressContact()}/>
 				)}
 			/>
 		</View>
