@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 const ContactsScreen = () => {
 	const [users, setUsers] = useState([]);
 	const [name, setName] = useState('');
+	const [selecteduserIds, setSelectedUserIds] = useState([]);
 	
 	const navigation = useNavigation();
 	
@@ -28,8 +29,16 @@ const ContactsScreen = () => {
 	const onCreateGroupPress = () => {
 	};
 	
-	const onPressContact = () => {
-		console.success('going to create a new group with this person');
+	const onContactPress = (id) => {
+		setSelectedUserIds((userIds) => {
+			if (userIds.includes(id)) {
+				// remove id from selected
+				return [...userIds.filter(uid => uid !== id)];
+			} else {
+				// add id to selected
+				return [...userIds, id];
+			}
+		});
 	};
 	
 	return (
@@ -43,7 +52,12 @@ const ContactsScreen = () => {
 			<FlatList
 				data={users}
 				renderItem={({ item }) => (
-					<ContactListItem user={item} onPress={() => onPressContact()}/>
+					<ContactListItem
+						user={item}
+						onPress={() => onContactPress(item.id)}
+						selectable={true}
+						isSelected={selecteduserIds.includes(item.id)}
+					/>
 				)}
 			/>
 		</View>
