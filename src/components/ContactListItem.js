@@ -1,4 +1,4 @@
-import {AntDesign, FontAwesome } from '@expo/vector-icons';
+import {AntDesign, FontAwesome} from '@expo/vector-icons';
 import {Text, View, Image, StyleSheet, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -14,9 +14,8 @@ const ContactListItem =
 		 selectable = false,
 		 isSelected = false,
 	 }) => {
-	
-	
-	
+		
+		
 		return (
 			<Pressable
 				onPress={onPress}
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		flex: 1,
+		marginRight: 10,
 	},
 	subTitle: {
 		color: 'gray',
