@@ -75,6 +75,10 @@ const ChatRoomInfo = () => {
 			]);
 	};
 	
+	const users = chatRoom.users.items.filter((value, index, array) => {
+		return !value._deleted;
+	});
+	
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{chatRoom.name}</Text>
@@ -84,7 +88,7 @@ const ChatRoomInfo = () => {
 			</Text>
 			<View style={styles.section}>
 				<FlatList
-					data={chatRoom.users.items}
+					data={users}
 					renderItem={({ item }) => (
 						<ContactListItem
 							user={item.user}
