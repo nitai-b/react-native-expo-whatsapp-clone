@@ -31,7 +31,7 @@ const NewGroupScreen = () => {
 	
 	const onCreateGroupPress = async () => {
 		// Create a new ChatRoom
-		const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
+		const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: { name } }));
 		
 		const newChatRoom = newChatRoomData.data?.createChatRoom;
 		

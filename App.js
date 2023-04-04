@@ -3,7 +3,7 @@ import {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {createUser} from './src/graphql/mutations';
 import {getUser} from './src/graphql/queries';
-import Navigator from './src/navigation/Navigatior';
+import Navigator from './src/navigation/Navigator';
 import {Amplify, API, Auth, graphqlOperation} from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react-native';
 import awsconfig from './src/aws-exports';

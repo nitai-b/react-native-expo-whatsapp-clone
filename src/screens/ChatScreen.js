@@ -7,6 +7,7 @@ import InputBox from '../components/InputBox';
 import Message from '../components/Message';
 import {getChatRoom, listMessagesByChatRoom} from '../graphql/queries';
 import {onCreateMessage, onUpdateChatRoom} from '../graphql/subscriptions';
+import {Feather} from '@expo/vector-icons';
 
 const ChatScreen = () => {
 	// Necessary objects and values
@@ -53,10 +54,17 @@ const ChatScreen = () => {
 		return () => subscription.unsubscribe();
 	}, [chatroomID]);
 	
-	//
+	// this is how you handle the top bar. it has navigation stuff in it, so we can update it with butons etc.
 	useEffect(() => {
-		navigation.setOptions({ title: route.params.name });
-	}, [route.params.name]);
+		navigation.setOptions({
+			title: route.params.name, headerRight: () => {
+				return (
+					<Feather name="more-vertical" size={24} color="black"
+									 onPress={() => navigation.navigate('Group Info', { id: chatroomID })}></Feather>
+				);
+			},
+		});
+	}, [route.params.name, chatroomID]);
 	
 	if (!chatRoom) {
 		return <ActivityIndicator/>;
