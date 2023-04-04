@@ -5,9 +5,9 @@ import {
 	View,
 	Text,
 	ActivityIndicator,
-	Alert,
+	Alert, Button,
 } from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {API, graphqlOperation} from 'aws-amplify';
 import {onUpdateChatRoom} from '../graphql/subscriptions';
@@ -17,6 +17,7 @@ import {deleteUserChatRoom} from '../graphql/mutations';
 const ChatRoomInfo = () => {
 	const [chatRoom, setChatRoom] = useState(null);
 	const route = useRoute();
+	const navigation = useNavigation();
 	
 	const chatroomID = route.params.id;
 	
@@ -83,9 +84,16 @@ const ChatRoomInfo = () => {
 		<View style={styles.container}>
 			<Text style={styles.title}>{chatRoom.name}</Text>
 			
-			<Text style={styles.sectionTitle}>
-				{users.length} Participants
-			</Text>
+			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 20 }}>
+				<Text style={styles.sectionTitle}>
+					{users.length} Participants
+				</Text>
+				<Text style={{ fontWeight: 'bold', color: 'royalblue' }}
+							onPress={() => navigation.navigate('Add Contacts', { chatRoom })}>
+					Add friends
+				</Text>
+			</View>
+			
 			<View style={styles.section}>
 				<FlatList
 					data={users}
@@ -114,7 +122,6 @@ const styles = StyleSheet.create({
 	sectionTitle: {
 		fontWeight: 'bold',
 		fontSize: 18,
-		marginTop: 20,
 	},
 	section: {
 		backgroundColor: 'white',
