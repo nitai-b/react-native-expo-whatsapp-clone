@@ -4,14 +4,15 @@ import ContactListItem from '../components/ContactListItem';
 import {API, Auth, graphqlOperation} from 'aws-amplify';
 import {createChatRoom, createUserChatRoom} from '../graphql/mutations';
 import {listUsers} from '../graphql/queries';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 const AddContactsToGroupScreen = () => {
 	const [users, setUsers] = useState([]);
-	const [name, setName] = useState('');
 	const [selectedUserIds, setSelectedUserIds] = useState([]);
 	
 	const navigation = useNavigation();
+	const route = useRoute();
+	const chatRoom = route.params.chatRoom;
 	
 	useEffect(() => {
 		API.graphql(graphqlOperation(listUsers)).then((result) => {
@@ -23,52 +24,26 @@ const AddContactsToGroupScreen = () => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
-					<Button title="Create" disabled={!name || selectedUserIds.length < 1} onPress={onCreateGroupPress}/>
+					<Button title="Add" disabled={selectedUserIds.length < 1} onPress={onCreateGroupPress}/>
 				);
 			},
 		});
-	}, [name, selectedUserIds]);
+	}, [selectedUserIds]);
 	
 	const onCreateGroupPress = async () => {
-		// Create a new ChatRoom
-		const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: { name } }));
-		
-		const newChatRoom = newChatRoomData.data?.createChatRoom;
-		
 		// Add the selected users to the ChatRoom
 		await Promise.all(selectedUserIds.map((uid) =>
 			API.graphql(graphqlOperation(createUserChatRoom, {
 					input: {
-						chatRoomId: newChatRoom.id,
+						chatRoomId: chatRoom.id,
 						userId: uid,
 					},
 				}),
 			),
 		));
-		// const addUser = await API.graphql(graphqlOperation(createUserChatRoom, {
-		// 	input: {
-		// 		chatRoomId: newChatRoom.id,
-		// 		userId: user.id,
-		// 	},
-		// }));
-		
-		
-		// Add the authUser to the ChatRoom
-		const authUser = await Auth.currentAuthenticatedUser();
-		const addAuthUser = await API.graphql(graphqlOperation(createUserChatRoom, {
-			input: {
-				chatRoomId: newChatRoom.id,
-				userId: authUser.attributes.sub,
-			},
-		}));
 		
 		setSelectedUserIds([]);
-		setName('');
-		
-		// navigate to the newly created chatroom
-		navigation.navigate('Chat', {
-			id: newChatRoom.id,
-		});
+		navigation.goBack();
 	};
 	
 	const onContactPress = (id) => {
@@ -85,12 +60,6 @@ const AddContactsToGroupScreen = () => {
 	
 	return (
 		<View style={styles.container}>
-			<TextInput
-				placeholder="Group name"
-				value={name}
-				onChangeText={setName}
-				style={styles.input}
-			/>
 			<FlatList
 				data={users}
 				renderItem={({ item }) => (
