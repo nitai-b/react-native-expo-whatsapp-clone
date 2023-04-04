@@ -6,6 +6,8 @@ query ListChats($id: ID!) {
 			items {
 				chatRoom {
 					id
+					name
+					image
 					updatedAt
 					users {
 						items {
