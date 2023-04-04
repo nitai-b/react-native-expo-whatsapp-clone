@@ -12,6 +12,7 @@ import {useRoute} from '@react-navigation/native';
 import {API, graphqlOperation} from 'aws-amplify';
 import {onUpdateChatRoom} from '../graphql/subscriptions';
 import ContactListItem from '../components/ContactListItem';
+import {deleteUserChatRoom} from '../graphql/mutations';
 
 const ChatRoomInfo = () => {
 	const [chatRoom, setChatRoom] = useState(null);
@@ -22,7 +23,7 @@ const ChatRoomInfo = () => {
 	useEffect(() => {
 		API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then(
 			(result) => {
-				console.log(result)
+				console.log(result);
 				setChatRoom(result.data?.getChatRoom);
 			},
 		);
@@ -49,6 +50,31 @@ const ChatRoomInfo = () => {
 		return <ActivityIndicator/>;
 	}
 	
+	const removeChatRoomUser = async (chatRoomUser) => {
+		const api = await API.graphql(graphqlOperation(deleteUserChatRoom, {
+			input: {
+				_version: chatRoomUser._version,
+				id: chatRoomUser.id,
+			},
+		}));
+		
+		console.log(api);
+	};
+	
+	const onContactPress = (chatRoomUser) => {
+		Alert.alert(
+			'Removing the user',
+			`Are you sure you want to remove ${chatRoomUser.user.name} from this group?`,
+			[
+				{ text: 'Cancel', style: 'default' },
+				{
+					text: `Remove ${chatRoomUser.user.name}`,
+					onPress: () => removeChatRoomUser(chatRoomUser),
+					style: 'destructive',
+				},
+			]);
+	};
+	
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>{chatRoom.name}</Text>
@@ -62,6 +88,8 @@ const ChatRoomInfo = () => {
 					renderItem={({ item }) => (
 						<ContactListItem
 							user={item.user}
+							// this is how you call a function that needs to pass a variable to it in an onPress or any prop
+							onPress={() => onContactPress(item)}
 						/>
 					)}
 				/>
@@ -96,7 +124,7 @@ export const getChatRoom = /* GraphQL */ `
         getChatRoom(id: $id) {
             id
             updatedAt
-						name
+            name
             users {
                 items {
                     id

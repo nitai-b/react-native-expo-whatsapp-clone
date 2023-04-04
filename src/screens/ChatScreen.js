@@ -57,7 +57,7 @@ const ChatScreen = () => {
 	// this is how you handle the top bar. it has navigation stuff in it, so we can update it with butons etc.
 	useEffect(() => {
 		navigation.setOptions({
-			title: chatRoom.name || route.params.name, headerRight: () => {
+			title: chatRoom?.name || route.params.name, headerRight: () => {
 				return (
 					<Feather name="more-vertical" size={24} color="black"
 									 onPress={() => navigation.navigate('Group Info', { id: chatroomID })}></Feather>
