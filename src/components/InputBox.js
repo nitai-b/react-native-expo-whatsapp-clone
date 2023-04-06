@@ -53,13 +53,7 @@ const InputBox = ({ chatroom }) => {
 		});
 		
 		if (!result.canceled) {
-			if (result.assets.length > 0) {
-				// user selected multiple files
-				setImages(result.assets.map((asset) => asset.uri));
-			} else {
-				// user selected one file
-				setImages([result.assets[0].uri]);
-			}
+			setImages(result.assets.map((asset) => asset.uri));
 		}
 		
 	};
@@ -90,7 +84,7 @@ const InputBox = ({ chatroom }) => {
 								<Image source={{ uri: item }} style={styles.selectedImage} resizeMode="contain"/>
 								<MaterialIcons
 									name="highlight-remove"
-									// onPress={() => setImage(null)}
+									onPress={() => setImages((existingImages) => existingImages.filter((img) => img !== item))}
 									size={20}
 									color="gray"
 									style={styles.removeSelectedImage}
