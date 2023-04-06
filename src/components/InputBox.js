@@ -1,7 +1,6 @@
 import * as ImagePicker from 'expo-image-picker';
 import React, {useState} from 'react';
-import {View, Image, TextInput} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View, Image, TextInput, FlatList} from 'react-native';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
@@ -16,7 +15,7 @@ dayjs.extend(relativeTime);
 const InputBox = ({ chatroom }) => {
 	
 	const [text, setText] = useState('');
-	const [image, setImage] = useState('');
+	const [images, setImages] = useState([]);
 	
 	const onSend = async () => {
 		const authUser = await Auth.currentAuthenticatedUser();
@@ -27,9 +26,9 @@ const InputBox = ({ chatroom }) => {
 			userID: authUser.attributes.sub,
 		};
 		
-		if (image) {
-			newMessage.images = [await uploadFile(image)];
-			setImage(null);
+		if (images) {
+			newMessage.images = [await uploadFile(images)];
+			setImages(null);
 		}
 		
 		const newMessageData = await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
@@ -50,10 +49,17 @@ const InputBox = ({ chatroom }) => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
 			quality: 1,
+			allowsMultipleSelection: true,
 		});
 		
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+			if (result.assets.length > 0) {
+				// user selected multiple files
+				setImages(result.assets.map((asset) => asset.uri));
+			} else {
+				// user selected one file
+				setImages([result.assets[0].uri]);
+			}
 		}
 		
 	};
@@ -74,15 +80,23 @@ const InputBox = ({ chatroom }) => {
 	
 	return (
 		<>
-			{image && (
+			{images.length > 0 && (
 				<View style={styles.attachmentContainer}>
-					<Image source={{ uri: image }} style={styles.selectedImage} resizeMode="contain"/>
-					<MaterialIcons
-						name="highlight-remove"
-						onPress={() => setImage(null)}
-						size={20}
-						color="gray"
-						style={styles.removeSelectedImage}
+					<FlatList
+						horizontal={true}
+						data={images}
+						renderItem={({ item }) => (
+							<>
+								<Image source={{ uri: item }} style={styles.selectedImage} resizeMode="contain"/>
+								<MaterialIcons
+									name="highlight-remove"
+									// onPress={() => setImage(null)}
+									size={20}
+									color="gray"
+									style={styles.removeSelectedImage}
+								/>
+							</>
+						)}
 					/>
 				</View>
 			)}
