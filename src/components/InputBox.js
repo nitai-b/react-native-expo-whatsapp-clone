@@ -26,9 +26,9 @@ const InputBox = ({ chatroom }) => {
 			userID: authUser.attributes.sub,
 		};
 		
-		if (images) {
-			newMessage.images = [await uploadFile(images)];
-			setImages(null);
+		if (images.length > 0) {
+			newMessage.images = await Promise.all(images.map(img => uploadFile(img)));
+			setImages([]);
 		}
 		
 		const newMessageData = await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
