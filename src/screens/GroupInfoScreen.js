@@ -62,7 +62,6 @@ const ChatRoomInfo = () => {
 			},
 		}));
 		
-		console.log(api);
 	};
 	
 	const onContactPress = (chatRoomUser) => {

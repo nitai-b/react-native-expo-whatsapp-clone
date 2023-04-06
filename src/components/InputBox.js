@@ -6,8 +6,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {API, graphqlOperation, Auth} from 'aws-amplify';
+import {API, graphqlOperation, Auth, Storage} from 'aws-amplify';
 import {createMessage, updateChatRoom} from '../graphql/mutations';
+import 'react-native-get-random-values';
+import {v4 as uuidv4} from 'uuid';
 
 dayjs.extend(relativeTime);
 
@@ -26,6 +28,11 @@ const InputBox = ({ chatroom }) => {
 			text: text,
 			userID: authUser.attributes.sub,
 		};
+		
+		if (image) {
+			newMessage.images = [await uploadFile(image)];
+			setImage(null);
+		}
 		
 		const newMessageData = await API.graphql(graphqlOperation(createMessage, { input: newMessage }));
 		setText('');
@@ -47,12 +54,24 @@ const InputBox = ({ chatroom }) => {
 			quality: 1,
 		});
 		
-		console.log(result);
-		
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
 		}
 		
+	};
+	
+	const uploadFile = async (fileUri) => {
+		try {
+			const response = await fetch(fileUri);
+			const blob = await response.blob();
+			const key = `${uuidv4()}.png`;
+			await Storage.put(key, blob, {
+				contentType: 'image/png', // contentType is optional
+			});
+			return key;
+		} catch (err) {
+			console.log('Error uploading file:', err);
+		}
 	};
 	
 	return (

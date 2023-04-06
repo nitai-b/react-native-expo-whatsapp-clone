@@ -4,6 +4,7 @@ query ListChats($id: ID!) {
 		id
 		ChatRooms {
 			items {
+				_deleted
 				chatRoom {
 					id
 					name
