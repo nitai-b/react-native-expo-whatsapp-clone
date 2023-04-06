@@ -1,5 +1,6 @@
-import {useState} from 'react';
-import {View, Text, TextInput} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import React, {useState} from 'react';
+import {View, Image, TextInput} from 'react-native';
 import {StyleSheet} from 'react-native';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
@@ -13,6 +14,7 @@ dayjs.extend(relativeTime);
 const InputBox = ({ chatroom }) => {
 	
 	const [text, setText] = useState('');
+	const [image, setImage] = useState('');
 	
 	const onSend = async () => {
 		console.warn('Sending a new message: ', text);
@@ -38,16 +40,38 @@ const InputBox = ({ chatroom }) => {
 		}));
 	};
 	
+	const pickImage = async () => {
+		// no permissions request is necessary for launching the image library
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.All,
+			quality: 1,
+		});
+		
+		console.log(result);
+		
+		if (!result.canceled) {
+			setImage(result.assets[0].uri);
+		}
+		
+	};
+	
 	return (
-		<SafeAreaView edges={['bottom']} style={styles.container}>
-			{/*    Icon*/}
-			<AntDesign name="plus" size={20} color="royalblue"/>
-			{/*    Text Input*/}
-			<TextInput value={text} onChangeText={setText} placeholder="Type your message"
-								 style={styles.input}></TextInput>
-			{/*    Icon*/}
-			<MaterialIcons onPress={onSend} name="send" size={16} color="white" style={styles.send}/>
-		</SafeAreaView>
+		<>
+			{image && (
+				<View>
+					<Image source={{ uri: image }} style={styles.selectedImage}/>
+				</View>
+			)}
+			<SafeAreaView edges={['bottom']} style={styles.container}>
+				{/*    Icon*/}
+				<AntDesign onPress={pickImage} name="plus" size={20} color="royalblue"/>
+				{/*    Text Input*/}
+				<TextInput value={text} onChangeText={setText} placeholder="Type your message"
+									 style={styles.input}></TextInput>
+				{/*    Icon*/}
+				<MaterialIcons onPress={onSend} name="send" size={16} color="white" style={styles.send}/>
+			</SafeAreaView>
+		</>
 	);
 };
 
@@ -75,6 +99,10 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		overflow: 'hidden',
 	},
+	selectedImage: {
+		width: 100,
+		height: 100,
+	}
 });
 
 export default InputBox;
