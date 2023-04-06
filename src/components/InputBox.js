@@ -58,8 +58,15 @@ const InputBox = ({ chatroom }) => {
 	return (
 		<>
 			{image && (
-				<View>
-					<Image source={{ uri: image }} style={styles.selectedImage}/>
+				<View style={styles.attachmentContainer}>
+					<Image source={{ uri: image }} style={styles.selectedImage} resizeMode="contain"/>
+					<MaterialIcons
+						name="highlight-remove"
+						onPress={() => setImage(null)}
+						size={20}
+						color="gray"
+						style={styles.removeSelectedImage}
+					/>
 				</View>
 			)}
 			<SafeAreaView edges={['bottom']} style={styles.container}>
@@ -99,10 +106,21 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		overflow: 'hidden',
 	},
+	attachmentsContainer: {
+		alignItems: 'flex-end',
+	},
 	selectedImage: {
-		width: 100,
 		height: 100,
-	}
+		width: 200,
+		margin: 5,
+	},
+	removeSelectedImage: {
+		position: 'absolute',
+		right: 10,
+		backgroundColor: 'white',
+		borderRadius: 10,
+		overflow: 'hidden',
+	},
 });
 
 export default InputBox;
