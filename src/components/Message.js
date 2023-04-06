@@ -1,19 +1,31 @@
-import {Auth} from 'aws-amplify';
-import {useEffect, useState} from 'react';
-import {View, Text, ImageBackground} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {Auth, Storage} from 'aws-amplify';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Image, View, Text, Pressable} from 'react-native';
+import ImageView from 'react-native-image-viewing';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
-import {S3Image} from 'aws-amplify-react-native/src';
 
 dayjs.extend(relativeTime);
 
 const Message = ({ message }) => {
 	const [isMe, setIsMe] = useState(false);
+	const [imageSources, setImageSources] = useState([]);
+	const [imageViewerVisible, setImageViewerVisible] = useState(false);
 	
 	useEffect(() => {
 		isMyMessage();
 	}, []);
+	
+	useEffect(() => {
+		const downloadImages = async () => {
+			if (message.images?.length > 0) {
+				// TODO: change to support multiple images
+				const uri = await Storage.get(message.images[0]);
+				setImageSources([{ uri }]);
+			}
+		};
+		downloadImages();
+	}, [message.images]);
 	
 	const isMyMessage = async () => {
 		const authUser = await Auth.currentAuthenticatedUser();
@@ -28,7 +40,16 @@ const Message = ({ message }) => {
 				alignSelf: isMe ? 'flex-end' : 'flex-start',
 			},
 		]}>
-			{message.images?.length > 0 && <S3Image imgKey={message.images[0]} style={styles.image}/>}
+			{message.images?.length > 0 && (
+				<>
+					<Pressable onPress={() => setImageViewerVisible(true )}>
+						<Image source={imageSources[0]} style={styles.image}/>
+					</Pressable>
+					<ImageView
+						images={imageSources} imageIndex={0} visible={imageViewerVisible} onRequestClose={() => setImageViewerVisible(false)}
+					/>
+				</>
+			)}
 			<Text>{message.text}</Text>
 			<Text style={styles.time}>{dayjs(message.createdAt).fromNow(true)}</Text>
 		</View>
