@@ -19,9 +19,8 @@ const Message = ({ message }) => {
 	useEffect(() => {
 		const downloadImages = async () => {
 			if (message.images?.length > 0) {
-				// TODO: change to support multiple images
-				const uri = await Storage.get(message.images[0]);
-				setImageSources([{ uri }]);
+				const uris = await Promise.all(message.images.map((img) => Storage.get(img)));
+				setImageSources(uris.map((uri) => ({ uri })));
 			}
 		};
 		downloadImages();
@@ -40,13 +39,15 @@ const Message = ({ message }) => {
 				alignSelf: isMe ? 'flex-end' : 'flex-start',
 			},
 		]}>
-			{message.images?.length > 0 && (
+			{imageSources.length > 0 && (
 				<>
-					<Pressable onPress={() => setImageViewerVisible(true )}>
-						<Image source={imageSources[0]} style={styles.image}/>
-					</Pressable>
+					{imageSources.map((imageSource) =>
+						(<Pressable onPress={() => setImageViewerVisible(true)}>
+							<Image source={imageSource} style={styles.image}/>
+						</Pressable>))}
 					<ImageView
-						images={imageSources} imageIndex={0} visible={imageViewerVisible} onRequestClose={() => setImageViewerVisible(false)}
+						images={imageSources} imageIndex={0} visible={imageViewerVisible}
+						onRequestClose={() => setImageViewerVisible(false)}
 					/>
 				</>
 			)}
